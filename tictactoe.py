@@ -1,11 +1,16 @@
 import os
 
-board = ['-','-','-',
-        '-','-','-',
-        '-','-','-']
+green = "\u001b[32;1m"
+blue = "\u001b[34;1m"
+reset_color = "\u001b[0m"
+
+board = ['[1]','[2]','[3]',
+        '[4]','[5]','[6]',
+        '[7]','[8]','[9]']
 
 available_numbers = [0,1,2,3,4,5,6,7,8]
-win_conditions = [[0,1,2],
+win_conditions = [
+                  [0,1,2],
                   [3,4,5],
                   [6,7,8],
                   [0,3,6],
@@ -18,35 +23,59 @@ win_conditions = [[0,1,2],
 playerA_moves = []
 playerB_moves = []
 
-playerA = 'X'
-playerB = 'O'
+playerA =  green + '[X]' + reset_color
+playerB =  blue + '[O]' + reset_color
 
 gameRunning = True
 
 def printBoard(board):
-    print(board[0] + '|' + board[1] + '|' + board[2])
-    print('-----')
-    print(board[3] + '|' + board[4] + '|' + board[5])
-    print('-----')
-    print(board[6] + '|' + board[7] + '|' + board[8])
+    print(board[0] + board[1] +  board[2])
+    print('---------')
+    print(board[3] + board[4] + board[5])
+    print('---------')
+    print(board[6] + board[7] + board[8])
 
 def processMove(input,player):
     board[input-1] = player
 
-def checkGame(win_conditions, playerA_moves, playerB_moves):
+def checkGameStatus(win_conditions, playerA_moves, playerB_moves, available_numbers):
+    for conditions in range(0, len(win_conditions)):
+        #print(conditions)
+        check_A = [x for x in playerA_moves if x in win_conditions[conditions]]
+        check_B = [x for x in playerB_moves if x in win_conditions[conditions]]
 
-    if (playerA_moves.sort() in win_conditions):
-        print("Player A Wins!!!") 
+        #print(str(check_A) + '|' + str(win_conditions[conditions]))
+        #print(str(check_B) + '|' + str(win_conditions[conditions]))
+        
+        if (sorted(check_A) == win_conditions[conditions]):
+            print('Player A WINS!!!')
+            return True
+           
+        if (sorted(check_B) == win_conditions[conditions]):
+            print('Player B WINS!!!')
+            return True
+
+    if (available_numbers == []):
+        print('Its a Tie!!!') 
         return True
 
-    if (playerB_moves.sort() in win_conditions):
-        print("Player B Wins!!!")
-        return True
+    return False
+        
 
-    else:
-        return False
+        
+
+    
+
+       
+            
+
+
+        
+
+   
 
 os.system('CLS')
+printBoard(board)
 
 while gameRunning:
    
@@ -64,7 +93,7 @@ while gameRunning:
         print('Please type a valid number!!')
         break
     
-    if(checkGame(win_conditions, playerA_moves, playerB_moves)):
+    if(checkGameStatus(win_conditions, playerA_moves, playerB_moves, available_numbers)):
         break
         
     inp = int(input("Player B: Enter a number 1~9: "))
@@ -80,7 +109,7 @@ while gameRunning:
         print('Please type a valid number!!')
         break
 
-    if(checkGame(win_conditions, playerA_moves, playerB_moves)):
+    if(checkGameStatus(win_conditions, playerA_moves, playerB_moves, available_numbers)):
         break
     
     
